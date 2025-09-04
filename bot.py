@@ -3,7 +3,7 @@ import os
 import aiohttp
 from pyrogram import Client, filters
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types import AudioVideoPiped
+from pytgcalls.types.input_stream import AudioVideoPiped  # ✅ Updated import
 from dotenv import load_dotenv
 
 # ----------------- Load ENV -----------------
@@ -73,8 +73,6 @@ async def play_video(client, message):
             chat_id,
             AudioVideoPiped(
                 video_url,
-                audio_parameters=None,
-                video_parameters=None
             )
         )
         await message.reply(f"▶️ **Playing:** `{title}`", quote=True)
@@ -88,9 +86,7 @@ async def change_speed(client, message):
         return await message.reply("❌ Usage: `/speed 1.5`", quote=True)
     try:
         speed = float(message.command[1])
-        # NOTE: pytgcalls me speed change ka direct option nahi hota
-        # iske liye ffmpeg filter use hota hai (advanced)
-        # abhi ke liye sirf message dikhayenge
+        # ⚡ Placeholder: FFmpeg filter for speed is advanced, coming soon
         await message.reply(f"⚡ Video speed set to {speed}x (Feature Coming Soon!)", quote=True)
     except:
         await message.reply("⚠️ Invalid speed value!", quote=True)
