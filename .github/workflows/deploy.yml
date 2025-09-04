@@ -1,0 +1,37 @@
+name: Deploy Bot
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Bot
+        env:
+          API_ID: ${{ secrets.API_ID }}
+          API_HASH: ${{ secrets.API_HASH }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          USER_STRING_SESSION: ${{ secrets.USER_STRING_SESSION }}
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "🚀 Starting Bot with Firebase support..."
+          python bot.py
