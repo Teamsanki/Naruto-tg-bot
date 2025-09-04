@@ -1,41 +1,34 @@
-name: Deploy Anime Bot
+name: Anime Bot
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  deploy-bot:
+  build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
 
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+    - name: Install dependencies
+      run: |
+        pip install pyrogram==2.0.106 aiohttp tgcrypto
+        pip install git+https://github.com/pytgcalls/pytgcalls.git@master
 
-      - name: Upgrade pip
-        run: pip install --upgrade pip
-
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run Bot
-        env:
-          API_ID: ${{ secrets.API_ID }}
-          API_HASH: ${{ secrets.API_HASH }}
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          USER_STRING_SESSION: ${{ secrets.USER_STRING_SESSION }}
-          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
-          API_KEY: ${{ secrets.API_KEY }}
-        run: |
-          echo "🚀 Starting Anime Bot..."
-          python bot.py
+    - name: Run Bot
+      env:
+        API_ID: ${{ secrets.API_ID }}
+        API_HASH: ${{ secrets.API_HASH }}
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        USER_STRING_SESSION: ${{ secrets.USER_STRING_SESSION }}
+        FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+        API_KEY: ${{ secrets.API_KEY }}
+      run: python bot.py
