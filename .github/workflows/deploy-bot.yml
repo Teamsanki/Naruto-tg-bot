@@ -1,0 +1,35 @@
+name: Build and Run Telegram Bot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to DockerHub (optional, if you want to push image)
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t naruto-tg-bot:latest .
+
+    - name: Run bot container
+      run: |
+        docker run -d --name naruto-bot \
+          -e API_ID=${{ secrets.API_ID }} \
+          -e API_HASH=${{ secrets.API_HASH }} \
+          -e BOT_TOKEN=${{ secrets.BOT_TOKEN }} \
+          naruto-tg-bot:latest
