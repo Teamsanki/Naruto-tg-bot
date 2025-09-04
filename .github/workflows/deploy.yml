@@ -20,8 +20,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install pyrogram==2.0.106 aiohttp tgcrypto
-        pip install git+https://github.com/pytgcalls/pytgcalls.git@master
+        pip install -r requirements.txt
 
     - name: Run Bot
       env:
