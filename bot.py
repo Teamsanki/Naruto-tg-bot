@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from pyrogram import Client, filters
 from pytgcalls import PyTgCalls, idle
-from pytgcalls.types import AudioVideoPiped
+from pytgcalls.types.input_stream import AudioVideoPiped
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 # ----------------- CONFIG -----------------
