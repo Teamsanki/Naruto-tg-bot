@@ -1,4 +1,4 @@
-name: Deploy Bot
+name: Deploy Anime Bot
 
 on:
   push:
@@ -7,21 +7,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-bot:
+  deploy-bot:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Install FFmpeg
+      - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
-      - name: Install dependencies
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+
+      - name: Install Python dependencies
         run: pip install -r requirements.txt
 
       - name: Run Bot
@@ -33,5 +37,5 @@ jobs:
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
           API_KEY: ${{ secrets.API_KEY }}
         run: |
-          echo "🚀 Starting Bot with Firebase support..."
+          echo "🚀 Starting Anime Bot..."
           python bot.py
