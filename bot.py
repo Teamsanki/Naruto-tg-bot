@@ -1,24 +1,25 @@
 import asyncio
-import random
-import string
 import aiohttp
+import os
+from dotenv import load_dotenv
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pytgcalls import PyTgCalls
-from pytgcalls.types import AudioVideoPiped
+from pytgcalls.types.input_stream import AudioPiped
 from pytgcalls.exceptions import NoActiveGroupCall
 
 # ---------------- CONFIG ---------------- #
-API_ID = 24393327
-API_HASH = "55f3460a683b019f7c764fc6b5f2a946"
-BOT_TOKEN = "8202234623:AAHvuE9S5fPWaBe3jCKIEKOkZdOULOjLAWs"
-USER_STRING_SESSION = "BQF0Nm8AZIvnVjdk9kfqftXn_..."  # truncated
-FIREBASE_URL = "https://social-bite-skofficial-default-rtdb.firebaseio.com/files.json"
+load_dotenv()
+API_ID = int(os.getenv("API_ID", "24393327"))
+API_HASH = os.getenv("API_HASH", "55f3460a683b019f7c764fc6b5f2a946")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "8202234623:AAHvuE9S5fPWaBe3jCKIEKOkZdOULOjLAWs")
+USER_STRING_SESSION = os.getenv("USER_STRING_SESSION", "")
+FIREBASE_URL = os.getenv("FIREBASE_URL", "https://social-bite-skofficial-default-rtdb.firebaseio.com/files.json")
 
 # ---------------- INIT CLIENTS ---------------- #
 app = Client("naruto_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 user = Client("naruto_user", api_id=API_ID, api_hash=API_HASH, session_string=USER_STRING_SESSION)
-call_py = PyTgCalls(app)
+call_py = PyTgCalls(user)
 
 # ---------------- UTILS ---------------- #
 async def fetch_firebase_data():
@@ -28,20 +29,14 @@ async def fetch_firebase_data():
                 return None
             return await resp.json()
 
-# ---------------- PLAY COMMAND ---------------- #
-@app.on_message(filters.command("play", prefixes=["/", "!", ".", "#"]) & filters.group)
-async def play_command(client: Client, message: Message):
-    await message.reply_text("ℹ️ Play command received. Implement your stream logic here.")
-
-# ---------------- NARUTO COMMAND ---------------- #
-@app.on_message(filters.command("naruto", prefixes=["/", "!", ".", "#"]) & filters.group)
-async def naruto_list(client: Client, message: Message):
+# ---------------- COMMANDS ---------------- #
+@app.on_message(filters.command("naruto") & filters.group)
+async def naruto_list(client, message):
     mystic = await message.reply_text("🔎 Fetching Naruto episodes...")
     data = await fetch_firebase_data()
     if not data:
         return await mystic.edit_text("⚠️ Firebase me koi episode nahi hai.")
-    
-    # Sort episodes
+
     try:
         episodes = sorted(data.items(), key=lambda x: int(x[0].replace("-", "")))
     except:
@@ -58,8 +53,8 @@ async def naruto_list(client: Client, message: Message):
 
     await mystic.edit_text("📺 Naruto Episodes:", reply_markup=InlineKeyboardMarkup(buttons))
 
-@app.on_callback_query(filters.regex(r"naruto_play\|"))
-async def play_naruto_episode(client: Client, callback):
+@app.on_callback_query(filters.regex(r"naruto_play\|.*"))
+async def play_naruto_episode(client, callback):
     ep_key = callback.data.split("|")[1]
     chat_id = callback.message.chat.id
     await callback.answer("▶️ Playing episode...", show_alert=True)
@@ -70,25 +65,41 @@ async def play_naruto_episode(client: Client, callback):
         return await mystic.edit_text("⚠️ Episode not found in Firebase.")
 
     ep_data = data[ep_key]
-    video_url = ep_data.get("url")
-    if not video_url:
+    audio_url = ep_data.get("url")
+    if not audio_url:
         return await mystic.edit_text("❌ Episode URL missing.")
 
     try:
-        # FFmpeg-based audio/video stream
-        await call_py.join_group_call(chat_id, AudioVideoPiped(video_url))
+        await call_py.join_group_call(
+            chat_id,
+            AudioPiped(audio_url)
+        )
         await mystic.edit_text(f"▶️ Now Playing in VC: {ep_data.get('name', f'NARUTO Episode {ep_key}')}")
     except NoActiveGroupCall:
-        await mystic.edit_text("⚠️ Group VC not active.")
+        await mystic.edit_text("⚠️ Group VC not active. Start VC first.")
     except Exception as e:
         await mystic.edit_text(f"⚠️ VC Join/Stream Error: {str(e)}")
+
+@app.on_message(filters.command("play") & filters.group)
+async def play_command(client, message):
+    await message.reply_text("ℹ️ Play command received. Implement your stream logic here.")
 
 # ---------------- START BOT ---------------- #
 async def main():
     await app.start()
-    await user.start()
+    print("Bot started...")
+
+    try:
+        await user.start()
+        print("User client started...")
+    except Exception as e:
+        print(f"⚠️ User client failed to start: {e}")
+        print("Bot will continue without VC streaming...")
+
     await call_py.start()
-    print("Bot and PyTgCalls started...")
+    print("PyTgCalls started...")
+    print("✅ Naruto Bot is ready!")
+
     await asyncio.Future()  # keep running
 
 if __name__ == "__main__":
