@@ -5,7 +5,7 @@ from pytgcalls import PyTgCalls, idle
 from pytgcalls.types.input_stream import AudioVideoPiped
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-# ----------------- CONFIG -----------------
+# ----------------- CONFIG ----------------
 API_ID = 24393327
 API_HASH = "55f3460a683b019f7c764fc6b5f2a946"
 BOT_TOKEN = "8202234623:AAHvuE9S5fPWaBe3jCKIEKOkZdOULOjLAWs"
