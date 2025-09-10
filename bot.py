@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from py_tgcalls import PyTgCalls
+from pytgcalls import Py_tgCalls
 from py_tgcalls.types.input_stream import AudioPiped
 from py_tgcalls.exceptions import NoActiveGroupCall
 
