@@ -13,7 +13,7 @@ load_dotenv()
 API_ID = int(os.getenv("API_ID", "24393327"))
 API_HASH = os.getenv("API_HASH", "55f3460a683b019f7c764fc6b5f2a946")
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8202234623:AAHvuE9S5fPWaBe3jCKIEKOkZdOULOjLAWs")
-USER_STRING_SESSION = os.getenv("USER_STRING_SESSION", "")
+USER_STRING_SESSION = os.getenv("USER_STRING_SESSION", "BQF0Nm8AfADioJ8J6EcT21gOSev-VMlD2QW6AEdU2U6zkxyC_c96W1exZF6KVQ8UD4ic0tMTrMSMCqdCnUjKDcH-4qD9YOYohSeq2v3F8OyE4-U6TfD5AY4osnfjXG33up9ghfzxH3qI84WDe5_LWpaOaQtl8ZZoQgWM99s-Csu5rWOC1OQxuzLljGvrgxyW4HLP0F8zO-xT_zmkDY_9NskdSVK9WanjMmVgrBUdtjaWj-qHujzAMBqTRruSyQeoafxQG4RU9YA7xWoVWERJqbbkH5Zt6uOM3BX-XuJugoEFkTRmICHFwzvi2igoJ5B1CpYc96tZe7kFLH6FCuXa0AytJUgeWAAAAAHynjhfAA")
 FIREBASE_URL = os.getenv("FIREBASE_URL", "https://social-bite-skofficial-default-rtdb.firebaseio.com/files.json")
 
 # ---------------- INIT CLIENTS ---------------- #
