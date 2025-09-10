@@ -1,5 +1,5 @@
-pyrogram==2.0.35
-git+https://github.com/pytgcalls/pytgcalls.git
-tgcrypto==1.2.0
-aiohttp==3.8.5
+pyrogram==2.0.106
+py-tgcalls==2.2.8
+tgcrypto
+aiohttp>=3.9.3
 python-dotenv==1.0.0
