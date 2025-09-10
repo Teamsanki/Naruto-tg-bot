@@ -4,9 +4,9 @@ import os
 from dotenv import load_dotenv
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from pytgcalls import PyTgCalls
-from pytgcalls.types.input_stream import AudioPiped
-from pytgcalls.exceptions import NoActiveGroupCall
+from py_tgcalls import PyTgCalls
+from py_tgcalls.types.input_stream import AudioPiped
+from py_tgcalls.exceptions import NoActiveGroupCall
 
 # ---------------- CONFIG ---------------- #
 load_dotenv()
